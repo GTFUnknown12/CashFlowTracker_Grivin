@@ -15,6 +15,11 @@ public class CashFlowTracker {
     private double TotalPengeluaran;
     private String NamaPemilik;
     private String MataUang;
+    private String Keterangan; //atribut baru
+    private String namaPemasukan; //atribut baru
+    private String namaPengeluaran; // atribut baru
+    private double nominalPemasukan; // atribut baru
+    private double nominalPengeluaran; //atribut baru
 
     // Constructor
     public CashFlowTracker(String namaPemilik, String mataUang) {
@@ -23,6 +28,14 @@ public class CashFlowTracker {
         this.TotalPemasukan = 0.0;
         this.TotalPengeluaran = 0.0;
         this.saldo = 0.0;
+    }
+    //Konstruktor baru
+    public CashFlowTracker(String namaPemasukan, String namaPengeluaran, String Keterangan) {
+        this.namaPemasukan = namaPemasukan;
+        this.namaPengeluaran = namaPengeluaran;
+        this.nominalPemasukan = 0.0;
+        this.nominalPengeluaran = 0.0;
+        this.Keterangan = Keterangan;
     }
 
     // Method to add a transaction
@@ -64,3 +77,4 @@ public class CashFlowTracker {
         System.out.println("Saldo: " + saldo + " " + MataUang);
     }
 }
+
