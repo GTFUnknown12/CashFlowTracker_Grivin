@@ -8,73 +8,98 @@ package LaporanKeuangan;
  *
  * @author ASUS
  */
+import java.util.ArrayList;
+import java.util.List;
+
 public class CashFlowTracker {
     // Attributes
-    private double TotalPemasukan;
+    private double totalPemasukan;
     private double saldo;
-    private double TotalPengeluaran;
-    private String NamaPemilik;
-    private String MataUang;
-    private String Keterangan; //atribut baru
-    private String namaPemasukan; //atribut baru
-    private String namaPengeluaran; // atribut baru
-    private double nominalPemasukan; // atribut baru
-    private double nominalPengeluaran; //atribut baru
+    private double totalPengeluaran;
+    private String namaPemilik;
+    private String mataUang;
+    private List<Transaction> transactions; // Menyimpan daftar transaksi
 
     // Constructor
     public CashFlowTracker(String namaPemilik, String mataUang) {
-        this.NamaPemilik = namaPemilik;
-        this.MataUang = mataUang;
-        this.TotalPemasukan = 0.0;
-        this.TotalPengeluaran = 0.0;
+        this.namaPemilik = namaPemilik;
+        this.mataUang = mataUang;
+        this.totalPemasukan = 0.0;
+        this.totalPengeluaran = 0.0;
         this.saldo = 0.0;
-    }
-    //Konstruktor baru
-    public CashFlowTracker(String namaPemasukan, String namaPengeluaran, String Keterangan) {
-        this.namaPemasukan = namaPemasukan;
-        this.namaPengeluaran = namaPengeluaran;
-        this.nominalPemasukan = 0.0;
-        this.nominalPengeluaran = 0.0;
-        this.Keterangan = Keterangan;
+        this.transactions = new ArrayList<>(); // Inisialisasi daftar transaksi
     }
 
     // Method to add a transaction
     public void tambahTransaksi(String deskripsi, double jumlah, boolean adalahPemasukan) {
+        Transaction transaction;
         if (adalahPemasukan) {
-            TotalPemasukan += jumlah;
+            transaction = new Income(deskripsi, jumlah, "Sumber Pemasukan"); // Anda bisa menambahkan sumber yang sesuai
+            totalPemasukan += jumlah;
             saldo += jumlah;
         } else {
-            TotalPengeluaran += jumlah;
+            transaction = new Transaction(deskripsi, -jumlah); // Pengeluaran dianggap negatif
+            totalPengeluaran += jumlah;
             saldo -= jumlah;
         }
-        // Logic to store transaction details can be added here
+        transactions.add(transaction); // Menyimpan transaksi
     }
 
     // Method to display transactions
     public void tampilkanTransaksi() {
-        // Logic to display transactions can be added here
-        System.out.println("Menampilkan transaksi...");
+        System.out.println("Daftar Transaksi:");
+        for (Transaction transaction : transactions) {
+            transaction.displayTransaction();
+        }
     }
 
     // Method to search for a transaction
     public void cariTransaksi(String kataKunci) {
-        // Logic to search for a transaction can be added here
         System.out.println("Mencari transaksi dengan kata kunci: " + kataKunci);
+        for (Transaction transaction : transactions) {
+            if (transaction.getDescription().contains(kataKunci)) {
+                transaction.displayTransaction();
+            }
+        }
     }
 
     // Method to delete a transaction
-    public void hapusTransaksi(int indek) {
-        // Logic to delete a transaction can be added here
-        System.out.println("Menghapus transaksi pada indeks: " + indek);
+    public void hapusTransaksi(int indeks) {
+        if (indeks >= 0 && indeks < transactions.size()) {
+            transactions.remove(indeks);
+            System.out.println("Transaksi pada indeks " + indeks + " telah dihapus.");
+        } else {
+            System.out.println("Indeks tidak valid.");
+        }
     }
 
     // Method to get a report
     public void dapatkanLaporan() {
-        // Logic to generate a report can be added here
         System.out.println("Mendapatkan laporan...");
-        System.out.println("Total Pemasukan: " + TotalPemasukan + " " + MataUang);
-        System.out.println("Total Pengeluaran: " + TotalPengeluaran + " " + MataUang);
-        System.out.println("Saldo: " + saldo + " " + MataUang);
+        System.out.println("Total Pemasukan: " + totalPemasukan + " " + mataUang);
+        System.out.println("Total Pengeluaran: " + totalPengeluaran + " " + mataUang);
+        System.out.println("Saldo: " + saldo + " " + mataUang);
+    }
+
+    public static void main(String[] args) {
+        CashFlowTracker tracker = new CashFlowTracker("John Doe", "IDR");
+
+        // Menambahkan beberapa transaksi
+        tracker.tambahTransaksi("Gaji Bulan Ini", 5000, true);
+        tracker.tambahTransaksi("Belanja Bulanan", 1500, false);
+        tracker.tambahTransaksi("Bonus Proyek", 2000, true);
+
+        // Menampilkan semua transaksi
+        tracker.tampilkanTransaksi();
+
+        // Mendapatkan laporan
+        tracker.dapatkanLaporan();
+
+        // Mencari transaksi
+        tracker.cariTransaksi("Gaji");
+
+        // Menghapus transaksi
+        tracker.hapusTransaksi(1); // Menghapus transaksi kedua
+        tracker.tampilkanTransaksi(); // Menampilkan transaksi setelah penghapusan
     }
 }
-
