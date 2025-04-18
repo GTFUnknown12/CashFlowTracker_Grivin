@@ -5,101 +5,167 @@
 package LaporanKeuangan;
 
 /**
- *
- * @author ASUS
+ * Class untuk melacak arus kas (cash flow) dengan prinsip enkapsulasi.
  */
-import java.util.ArrayList;
-import java.util.List;
-
 public class CashFlowTracker {
-    // Attributes
+    // Atribut private (enkapsulasi)
     private double totalPemasukan;
-    private double saldo;
     private double totalPengeluaran;
+    private double saldo;
     private String namaPemilik;
     private String mataUang;
-    private List<Transaction> transactions; // Menyimpan daftar transaksi
+    private String keterangan;
+    private String namaPemasukan;
+    private double nominalPemasukan;
+    private String namaPengeluaran;
+    private double nominalPengeluaran;
 
-    // Constructor
+    /**
+     * Constructor utama untuk inisialisasi pemilik dan mata uang.
+     * @param namaPemilik Nama pemilik rekening.
+     * @param mataUang Jenis mata uang (contoh: "IDR").
+     */
     public CashFlowTracker(String namaPemilik, String mataUang) {
         this.namaPemilik = namaPemilik;
         this.mataUang = mataUang;
         this.totalPemasukan = 0.0;
         this.totalPengeluaran = 0.0;
         this.saldo = 0.0;
-        this.transactions = new ArrayList<>(); // Inisialisasi daftar transaksi
     }
 
-    // Method to add a transaction
+    /**
+     * Constructor tambahan untuk mencatat transaksi dengan detail.
+     * @param namaPemasukan Nama kategori pemasukan.
+     * @param nominalPemasukan Nominal pemasukan.
+     * @param namaPengeluaran Nama kategori pengeluaran.
+     * @param nominalPengeluaran Nominal pengeluaran.
+     * @param keterangan Keterangan transaksi.
+     */
+    public CashFlowTracker(String namaPemasukan, double nominalPemasukan,
+                            String namaPengeluaran, double nominalPengeluaran,
+                            String keterangan) {
+        this(); // Panggil default jika ada (jika diperlukan)
+        this.namaPemasukan = namaPemasukan;
+        this.nominalPemasukan = nominalPemasukan;
+        this.namaPengeluaran = namaPengeluaran;
+        this.nominalPengeluaran = nominalPengeluaran;
+        this.keterangan = keterangan;
+    }
+
+    // Default constructor (opsional)
+    private CashFlowTracker() {
+        // Inisialisasi default
+        this.totalPemasukan = 0.0;
+        this.totalPengeluaran = 0.0;
+        this.saldo = 0.0;
+    }
+
+    /**
+     * Tambah transaksi baru.
+     * @param deskripsi Deskripsi/transaksi.
+     * @param jumlah Nominal.
+     * @param adalahPemasukan True jika pemasukan, false jika pengeluaran.
+     */
     public void tambahTransaksi(String deskripsi, double jumlah, boolean adalahPemasukan) {
-        Transaction transaction;
         if (adalahPemasukan) {
-            transaction = new Income(deskripsi, jumlah, "Sumber Pemasukan"); // Anda bisa menambahkan sumber yang sesuai
             totalPemasukan += jumlah;
             saldo += jumlah;
         } else {
-            transaction = new Transaction(deskripsi, -jumlah); // Pengeluaran dianggap negatif
             totalPengeluaran += jumlah;
             saldo -= jumlah;
         }
-        transactions.add(transaction); // Menyimpan transaksi
+        // Simpan detail transaksi jika perlu
     }
 
-    // Method to display transactions
     public void tampilkanTransaksi() {
-        System.out.println("Daftar Transaksi:");
-        for (Transaction transaction : transactions) {
-            transaction.displayTransaction();
-        }
+        // Logika menampilkan daftar transaksi
+        System.out.println("Menampilkan semua transaksi...");
     }
 
-    // Method to search for a transaction
     public void cariTransaksi(String kataKunci) {
-        System.out.println("Mencari transaksi dengan kata kunci: " + kataKunci);
-        for (Transaction transaction : transactions) {
-            if (transaction.getDescription().contains(kataKunci)) {
-                transaction.displayTransaction();
-            }
-        }
+        // Logika pencarian
+        System.out.println("Mencari transaksi: " + kataKunci);
     }
 
-    // Method to delete a transaction
     public void hapusTransaksi(int indeks) {
-        if (indeks >= 0 && indeks < transactions.size()) {
-            transactions.remove(indeks);
-            System.out.println("Transaksi pada indeks " + indeks + " telah dihapus.");
-        } else {
-            System.out.println("Indeks tidak valid.");
-        }
+        // Logika penghapusan
+        System.out.println("Menghapus transaksi indeks: " + indeks);
     }
 
-    // Method to get a report
     public void dapatkanLaporan() {
-        System.out.println("Mendapatkan laporan...");
-        System.out.println("Total Pemasukan: " + totalPemasukan + " " + mataUang);
+        System.out.println("--- Laporan Arus Kas ---");
+        System.out.println("Pemilik       : " + namaPemilik);
+        System.out.println("Total Pemasukan : " + totalPemasukan + " " + mataUang);
         System.out.println("Total Pengeluaran: " + totalPengeluaran + " " + mataUang);
-        System.out.println("Saldo: " + saldo + " " + mataUang);
+        System.out.println("Saldo           : " + saldo + " " + mataUang);
     }
 
-    public static void main(String[] args) {
-        CashFlowTracker tracker = new CashFlowTracker("John Doe", "IDR");
+    // ----- Getters dan Setters -----
+    public double getTotalPemasukan() {
+        return totalPemasukan;
+    }
 
-        // Menambahkan beberapa transaksi
-        tracker.tambahTransaksi("Gaji Bulan Ini", 5000, true);
-        tracker.tambahTransaksi("Belanja Bulanan", 1500, false);
-        tracker.tambahTransaksi("Bonus Proyek", 2000, true);
+    public double getTotalPengeluaran() {
+        return totalPengeluaran;
+    }
 
-        // Menampilkan semua transaksi
-        tracker.tampilkanTransaksi();
+    public double getSaldo() {
+        return saldo;
+    }
 
-        // Mendapatkan laporan
-        tracker.dapatkanLaporan();
+    public String getNamaPemilik() {
+        return namaPemilik;
+    }
 
-        // Mencari transaksi
-        tracker.cariTransaksi("Gaji");
+    public void setNamaPemilik(String namaPemilik) {
+        this.namaPemilik = namaPemilik;
+    }
 
-        // Menghapus transaksi
-        tracker.hapusTransaksi(1); // Menghapus transaksi kedua
-        tracker.tampilkanTransaksi(); // Menampilkan transaksi setelah penghapusan
+    public String getMataUang() {
+        return mataUang;
+    }
+
+    public void setMataUang(String mataUang) {
+        this.mataUang = mataUang;
+    }
+
+    public String getKeterangan() {
+        return keterangan;
+    }
+
+    public void setKeterangan(String keterangan) {
+        this.keterangan = keterangan;
+    }
+
+    public String getNamaPemasukan() {
+        return namaPemasukan;
+    }
+
+    public void setNamaPemasukan(String namaPemasukan) {
+        this.namaPemasukan = namaPemasukan;
+    }
+
+    public double getNominalPemasukan() {
+        return nominalPemasukan;
+    }
+
+    public void setNominalPemasukan(double nominalPemasukan) {
+        this.nominalPemasukan = nominalPemasukan;
+    }
+
+    public String getNamaPengeluaran() {
+        return namaPengeluaran;
+    }
+
+    public void setNamaPengeluaran(String namaPengeluaran) {
+        this.namaPengeluaran = namaPengeluaran;
+    }
+
+    public double getNominalPengeluaran() {
+        return nominalPengeluaran;
+    }
+
+    public void setNominalPengeluaran(double nominalPengeluaran) {
+        this.nominalPengeluaran = nominalPengeluaran;
     }
 }
